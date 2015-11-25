@@ -1,0 +1,5 @@
+====================
+collective.announcement
+====================
+
+User documentation

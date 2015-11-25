@@ -1,0 +1,37 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="collective.announcement">
+
+  <!-- Set overrides folder for Just-a-Bunch-Of-Templates product -->
+  <include package="z3c.jbot" file="meta.zcml" />
+  <browser:jbot
+      directory="overrides"
+      layer="collective.announcement.interfaces.ICollectiveAnnouncementLayer"
+      />
+
+  <!-- Publish static files -->
+  <browser:resourceDirectory
+      name="collective.announcement"
+      directory="static"
+      />
+
+  <browser:viewlet
+    name="announcement"
+    for="*"
+    manager="plone.app.layout.viewlets.interfaces.IAboveContent"
+    class=".viewlets.AnnouncementViewlet"
+    template="templates/announcement.pt"
+    permission="zope2.View"
+    />
+      
+  <browser:page
+    name="announcement-controlpanel"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    permission="cmf.ManagePortal"
+    class=".controlpanel.AnnouncementControlPanelView"
+  />
+  <subscriber handler=".controlpanel.handleRegistryModified" />
+
+</configure>
