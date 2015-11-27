@@ -56,6 +56,10 @@ AnnouncementControlPanelView = layout.wrap_form(
 @adapter(IAnnouncementControlPanel, IRecordModifiedEvent)
 def handleRegistryModified(settings, event):
     if event.record.fieldName in ['site_announcement', 'expire_on']:
-        api.portal.set_registry_record('site_announcement.date_updated',
-                                       datetime.now())
+        import pdb; pdb.set_trace
+        try:
+            api.portal.set_registry_record('site_announcement.date_updated',
+                                           datetime.now())
+        except:
+            pass
 

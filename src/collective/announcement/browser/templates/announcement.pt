@@ -1,8 +1,12 @@
 <metal:block tal:define="data view/data">
     <metal:show tal:condition="data/show_here">
-            <div class="alert alert-info" role="alert">
-                <span tal:content="structure data/site_announcement"></span>
-                <span tal:content="structure data/date_updated"></span>
+        <div class="container">
+            <div class="row">
+                <div class="portalMessage info" role="alert">
+                    <span tal:content="structure data/site_announcement"></span>
+                    <span tal:content="structure data/date_updated"></span>
+                </div>
             </div>
+        </div>
     </metal:show>
 </metal:block>

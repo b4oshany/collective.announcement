@@ -1,8 +1,8 @@
 <registry>
+
 <records 
       interface="collective.announcement.browser.controlpanel.IAnnouncementControlPanel"
       prefix="site_announcement" >
-  
   <record name="site_announcement.date_updated">
     <field type="plone.registry.field.Datetime">
         <title>Modify date</title>

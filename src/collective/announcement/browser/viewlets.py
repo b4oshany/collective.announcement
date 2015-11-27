@@ -6,6 +6,7 @@ from zope.component import ComponentLookupError
 from Products.CMFCore.interfaces import ISiteRoot
 from zope.component import getMultiAdapter
 from plone.app.layout.navigation.interfaces import INavigationRoot
+from plone.api.exc import InvalidParameterError
 
 
 class AnnouncementViewlet(ViewletBase):
@@ -22,11 +23,14 @@ class AnnouncementViewlet(ViewletBase):
             _data[item] = self.get_registry_entry(
                                           "%s.%s" % (prefix,item)
                                           )
-        _data["show_here"] = datetime.now() >= _data["expire_on"]
+        try:
+            _data["show_here"] = datetime.now() <= _data["expire_on"]
+        except TypeError:
+            _data["show_here"] = True
         try:
             _data["date_updated"] = self.get_registry_entry(
                 "%s.date_updated" % prefix).strftime("%A %d. %B %Y")
-        except AttributeErrorr:
+        except (AttributeError, InvalidParameterError) as e:
             _data["date_updated"] = ""
         return _data
 
