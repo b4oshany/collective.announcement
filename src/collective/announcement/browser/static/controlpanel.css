@@ -1,0 +1,21 @@
+.icon-controlpanel-authomatic {
+    background-image: url(announcement.svg);
+    background-size: 72px auto, 72px auto;
+    height: 72px;
+    width: 72px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.datagridwidget-cell{
+    vertical-align: middle;
+    text: center;
+}
+
+.datagridwidget-cell label{
+    display: none;
+}
+
+.datagridwidget-cell .pattern-pickadate-wrapper input {
+    width: 150px !important;
+}

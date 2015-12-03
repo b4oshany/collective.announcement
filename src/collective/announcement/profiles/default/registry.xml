@@ -1,4 +1,30 @@
 <registry>
 
-
+<records 
+      interface="collective.announcement.browser.controlpanel.IAnnouncementForm"
+      prefix="site_announcement" >
+  <record name="site_announcement.date_updated">
+    <field type="plone.registry.field.Datetime">
+        <title>Modify date</title>
+        <required>False</required>
+    </field>
+  </record>
+</records>
+ <records prefix="plone.resources/collective.announcement"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+    <value key="enabled">True</value>
+      <value key="css">
+              <element>++plone++collective.announcement/controlpanel.css</element>
+        </value>
+  </records>
+   <records
+      interface="Products.CMFPlone.interfaces.IBundleRegistry"
+      prefix="plone.bundles/authomatic-addon">
+    <value key="resources">
+      <element>collective.announcement</element>
+    </value>
+    <value key="enabled">True</value>
+    <value key="compile">True</value>
+    <value key="csscompilation">++plone++collective.announcement/authomatic.css</value>
+  </records>
 </registry>

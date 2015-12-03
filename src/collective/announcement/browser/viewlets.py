@@ -19,19 +19,20 @@ class AnnouncementViewlet(ViewletBase):
                   "show_on_all_pages",
                   "expire_on",
                   "show_announcement"]
-        for item in fields:
-            _data[item] = self.get_registry_entry(
-                                          "%s.%s" % (prefix,item)
-                                          )
+
+        #import pdb; pdb.set_trace()
+        try:
+            announcements = self.get_registry_entry("%s.announcements" % prefix)
+            if not announcements:
+                return _data
+            _data = announcements[0]
+        except InvalidParameterError:
+            return _data
+
         try:
             _data["show_here"] = datetime.now() <= _data["expire_on"]
         except TypeError:
             _data["show_here"] = True
-        try:
-            _data["date_updated"] = self.get_registry_entry(
-                "%s.date_updated" % prefix).strftime("%A %d. %B %Y")
-        except (AttributeError, InvalidParameterError) as e:
-            _data["date_updated"] = ""
         return _data
 
     def get_registry_entry(self,entry):
