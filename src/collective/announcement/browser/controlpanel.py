@@ -7,16 +7,18 @@ from plone.app.textfield import RichText
 from zope import schema
 from zope.interface import Interface
 from z3c.form.interfaces import INPUT_MODE
-from z3c.form import form, field
+from z3c.form import field, form as z3c_form
 from plone.app.z3cform.wysiwyg import WysiwygFieldWidget
 from plone import api
-
+from plone.directives import form
 from zope.component import adapter
 from plone.registry.interfaces import IRecordModifiedEvent
+from five import grok
+
+from collective.z3cform.datagridfield import DataGridFieldFactory, DictRow
 
 
-class IAnnouncementControlPanel(Interface):
-
+class IAnnouncementRowSchema(Interface):
     show_announcement = schema.Bool(
         title=u'Show the announcement',
         description=u'The announcement is only displayed when this box is checked',
@@ -39,27 +41,20 @@ class IAnnouncementControlPanel(Interface):
         required=False,
     )
 
+class IAnnouncementFormSchema(Interface):
+    announcements = schema.List(title=u"Announcements",
+        value_type=DictRow(title=u"tablerow", schema=IAnnouncementRowSchema))
 
-class AnnouncementControlPanelForm(RegistryEditForm):
-    fields = field.Fields(IAnnouncementControlPanel)
-    # this should give us a richtext widget for editing
-    fields['site_announcement'].widgetFactory[INPUT_MODE] = WysiwygFieldWidget
-    schema = IAnnouncementControlPanel
+
+class AnnouncementControlPanelForm(form.EditForm):
+    label = u'Announcements List'
+    z3c_form.extends(form.EditForm)
+
+    grok.context(IAnnouncementFormSchema)
+    grok.require('zope2.View')
+    fields = field.Fields(IAnnouncementFormSchema)
     schema_prefix = "site_announcement"
-    label = u'Announcement Settings'
-
-
-AnnouncementControlPanelView = layout.wrap_form(
-    AnnouncementControlPanelForm, ControlPanelFormWrapper)
-
-
-@adapter(IAnnouncementControlPanel, IRecordModifiedEvent)
-def handleRegistryModified(settings, event):
-    if event.record.fieldName in ['site_announcement', 'expire_on']:
-        import pdb; pdb.set_trace
-        try:
-            api.portal.set_registry_record('site_announcement.date_updated',
-                                           datetime.now())
-        except:
-            pass
-
+    # this should give us a richtext widget for editing
+    fields['announcements'].widgetFactory = DataGridFieldFactory
+    
+    #fields['site_announcement'].widgetFactory[INPUT_MODE] = WysiwygFieldWidget
