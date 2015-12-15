@@ -22,6 +22,8 @@ from plone.app.registry.browser.controlpanel import ControlPanelFormWrapper
 from plone.z3cform import layout
 from plone.app.registry.browser.controlpanel import RegistryEditForm
 from Products.statusmessages.interfaces import IStatusMessage
+from zope.component import getUtility
+from plone.registry.interfaces import IRegistry
 
 
 class IAnnouncement(form.Schema):
@@ -76,22 +78,13 @@ class AnnouncementControlPanelForm(RegistryEditForm):
         self.widgets['announcements'].allow_reorder = True
 
     def getContent(self):
-        data = super(AnnouncementControlPanelForm, self).getContent()
-        if data:
-            return data
-        return TESTDATA
-
-    @button.buttonAndHandler(u'Save', name='save')
-    def handleSave(self, action):
-        data, errors = self.extractData()
-        if errors:
-            self.status = self.formErrorsMessage
-            return
-        self.applyChanges(data)
-        IStatusMessage(self.request).addStatusMessage(
-            "Changes saved.",
-            "info")
-        self.request.response.redirect(self.request.getURL())
+        try:
+            data = super(AnnouncementControlPanelForm, self).getContent()
+        except KeyError:
+            data = TESTDATA
+            registry = getUtility(IRegistry)
+            registry.registerInterface(IAnnouncement)
+        return data
 
 AnnouncementControlPanelView = layout.wrap_form(
     AnnouncementControlPanelForm, ControlPanelFormWrapper)

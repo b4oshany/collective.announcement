@@ -1,4 +1,4 @@
-.icon-controlpanel-authomatic {
+.template-announcement-controlpanel .icon-controlpanel-authomatic {
     background-image: url(announcement.svg);
     background-size: 72px auto, 72px auto;
     height: 72px;
@@ -7,15 +7,15 @@
     margin-right: auto;
 }
 
-.datagridwidget-cell{
+.template-announcement-controlpanel .datagridwidget-cell{
     vertical-align: middle;
     text: center;
 }
 
-.datagridwidget-cell label{
+.template-announcement-controlpanel .datagridwidget-cell label{
     display: none;
 }
 
-.datagridwidget-cell .pattern-pickadate-wrapper input {
+.template-announcement-controlpanel .datagridwidget-cell .pattern-pickadate-wrapper input {
     width: 150px !important;
 }
