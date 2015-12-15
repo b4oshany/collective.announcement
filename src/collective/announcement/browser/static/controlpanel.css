@@ -1,4 +1,3 @@
-<style>
 .template-announcement-controlpanel .icon-controlpanel-authomatic {
     background-image: url(announcement.svg);
     background-size: 72px auto, 72px auto;
@@ -20,16 +19,3 @@
 .template-announcement-controlpanel .datagridwidget-cell .pattern-pickadate-wrapper input {
     width: 150px !important;
 }
-</style>
-
-<metal:block tal:define="data view/data">
-    <metal:show tal:condition="data/show_here">
-        <div class="container">
-            <div class="row">
-                <div class="portalMessage info" role="alert">
-                    <span tal:content="structure data/site_announcement"></span>
-                </div>
-            </div>
-        </div>
-    </metal:show>
-</metal:block>

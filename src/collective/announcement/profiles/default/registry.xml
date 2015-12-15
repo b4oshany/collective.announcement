@@ -1,7 +1,7 @@
 <registry>
 
 <records 
-      interface="collective.announcement.browser.controlpanel.IAnnouncementControlPanel"
+      interface="collective.announcement.browser.controlpanel.IAnnouncementForm"
       prefix="site_announcement" >
   <record name="site_announcement.date_updated">
     <field type="plone.registry.field.Datetime">
@@ -10,4 +10,10 @@
     </field>
   </record>
 </records>
+ <records prefix="plone.resources/collective.announcement"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+    <value key="css">
+        <element>++resource++collective.announcement/controlpanel.css</element>
+    </value>
+  </records>
 </registry>

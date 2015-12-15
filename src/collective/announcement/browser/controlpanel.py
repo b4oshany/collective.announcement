@@ -1,65 +1,90 @@
-# -*- coding: utf-8 -*-
-from datetime import datetime
-from plone.app.registry.browser.controlpanel import ControlPanelFormWrapper
-from plone.app.registry.browser.controlpanel import RegistryEditForm
-from plone.z3cform import layout
-from plone.app.textfield import RichText
+"""
+    Demo of the widget
+    I haven't gotten these views working with tests.
+"""
+from five import grok
+
+from zope.interface import Interface, implements
 from zope import schema
-from zope.interface import Interface
-from z3c.form.interfaces import INPUT_MODE
-from z3c.form import form, field
-from plone.app.z3cform.wysiwyg import WysiwygFieldWidget
-from plone import api
+from zope.schema.fieldproperty import FieldProperty
+from zope.schema import getFieldsInOrder
+from datetime import datetime
 
-from zope.component import adapter
-from plone.registry.interfaces import IRecordModifiedEvent
+from z3c.form import field, button
+from z3c.form.interfaces import DISPLAY_MODE, HIDDEN_MODE, IDataConverter, NO_VALUE
+from z3c.form.converter import BaseDataConverter
+
+from plone.directives import form
+from collective.z3cform.datagridfield.registry import DictRow
+from collective.z3cform.datagridfield import DataGridFieldFactory, IDataGridField
+
+from plone.app.registry.browser.controlpanel import ControlPanelFormWrapper
+from plone.z3cform import layout
+from plone.app.registry.browser.controlpanel import RegistryEditForm
+from Products.statusmessages.interfaces import IStatusMessage
+from zope.component import getUtility
+from plone.registry.interfaces import IRegistry
 
 
-class IAnnouncementControlPanel(Interface):
-
+class IAnnouncement(form.Schema):
     show_announcement = schema.Bool(
         title=u'Show the announcement',
-        description=u'The announcement is only displayed when this box is checked',
         default=False,
         required=False,
     )
     show_on_all_pages = schema.Bool(
         title=u'Show on all pages',
-        description=u'Show on all pages not just the front page',
         default=False,
         required=False,
     )
     expire_on = schema.Datetime(
         title=u'Expiration Date',
-        description=u'If set the announcement will be removed at this time',
         required=False,
     )
     site_announcement = schema.Text(
-        title=u'An announcement that shows on the website',
+        title=u'Message',
         required=False,
     )
 
+class IAnnouncementForm(Interface):
+    announcements = schema.List(title=u'Announcements',
+        value_type=DictRow(title=u'Announcements', schema=IAnnouncement),
+        required=True)
+
+
+TESTDATA = {
+    'announcements': [
+           {'show_announcement': True,
+            'show_on_all_pages': True,
+            'expire_on': datetime.today(),
+            'site_announcement': 'Mega City'
+            }
+    ]}
+#-------------[ Views Follow ]-------------------------------------------
 
 class AnnouncementControlPanelForm(RegistryEditForm):
-    fields = field.Fields(IAnnouncementControlPanel)
-    # this should give us a richtext widget for editing
-    fields['site_announcement'].widgetFactory[INPUT_MODE] = WysiwygFieldWidget
-    schema = IAnnouncementControlPanel
     schema_prefix = "site_announcement"
     label = u'Announcement Settings'
+    schema = IAnnouncementForm
+    fields = field.Fields(IAnnouncementForm)
+    fields['announcements'].widgetFactory = DataGridFieldFactory
 
+    def updateActions(self):
+        """Bypass the baseclass editform - it causes problems"""
+        super(RegistryEditForm, self).updateActions()
+
+    def updateWidgets(self):
+        super(AnnouncementControlPanelForm, self).updateWidgets()
+        self.widgets['announcements'].allow_reorder = True
+
+    def getContent(self):
+        try:
+            data = super(AnnouncementControlPanelForm, self).getContent()
+        except KeyError:
+            data = TESTDATA
+            registry = getUtility(IRegistry)
+            registry.registerInterface(IAnnouncement)
+        return data
 
 AnnouncementControlPanelView = layout.wrap_form(
     AnnouncementControlPanelForm, ControlPanelFormWrapper)
-
-
-@adapter(IAnnouncementControlPanel, IRecordModifiedEvent)
-def handleRegistryModified(settings, event):
-    if event.record.fieldName in ['site_announcement', 'expire_on']:
-        import pdb; pdb.set_trace
-        try:
-            api.portal.set_registry_record('site_announcement.date_updated',
-                                           datetime.now())
-        except:
-            pass
-
