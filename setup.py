@@ -19,7 +19,7 @@ long_description = (
 
 setup(
     name='collective.announcement',
-    version='1.0.2',
+    version='1.0.3',
     description="This package is a Plone product that enables you to provide a simple alert message to a Plone site",
     long_description=long_description,
     # Get more from https://pypi.python.org/pypi?%3Aaction=list_classifiers
