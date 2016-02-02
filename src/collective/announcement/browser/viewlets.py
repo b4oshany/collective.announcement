@@ -13,7 +13,7 @@ class AnnouncementViewlet(ViewletBase):
     """ viewlet that displays announcements """
 
     def data(self):
-        _data = {}
+        _data = {"show_here":False}
         prefix = "site_announcement"
         fields = ["site_announcement",
                   "show_on_all_pages",
