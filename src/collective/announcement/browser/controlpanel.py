@@ -17,6 +17,7 @@ from z3c.form.converter import BaseDataConverter
 from plone.directives import form
 from collective.z3cform.datagridfield.registry import DictRow
 from collective.z3cform.datagridfield import DataGridFieldFactory, IDataGridField
+from collective.z3cform.datagridfield import BlockDataGridFieldFactory
 
 from plone.app.registry.browser.controlpanel import ControlPanelFormWrapper
 from plone.z3cform import layout
@@ -24,6 +25,7 @@ from plone.app.registry.browser.controlpanel import RegistryEditForm
 from Products.statusmessages.interfaces import IStatusMessage
 from zope.component import getUtility
 from plone.registry.interfaces import IRegistry
+from plone.app.z3cform.wysiwyg import WysiwygFieldWidget
 
 
 class IAnnouncement(form.Schema):
@@ -41,6 +43,8 @@ class IAnnouncement(form.Schema):
         title=u'Expiration Date',
         required=False,
     )
+
+    #form.widget(site_announcement=WysiwygFieldWidget)
     site_announcement = schema.Text(
         title=u'Message',
         required=False,
